@@ -30,5 +30,7 @@ public class Doctor {
 
     private String phoneNumber;
 
+    private String role;
+
 }
 

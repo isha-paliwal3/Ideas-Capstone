@@ -60,7 +60,7 @@ public class PatientController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/patients")
+    @GetMapping("/doctor/patients")
     public ResponseEntity<List<PatientDTO>> getAllPatients() {
         List<PatientDTO> patients = patientRepository.findBy();
         return new ResponseEntity<>(patients, HttpStatus.OK);

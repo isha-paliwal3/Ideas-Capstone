@@ -8,8 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 public class MyUserDetailsService implements UserDetailsService {
 
@@ -21,10 +19,11 @@ public class MyUserDetailsService implements UserDetailsService {
         Doctor doctor = doctorRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Doctor not found with email: " + email));
 
-        return new org.springframework.security.core.userdetails.User(
-                doctor.getEmail(),
-                doctor.getPassword(),
-                new ArrayList<>()
-        );
+        // Return a Spring Security User object with roles
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(doctor.getEmail())
+                .password(doctor.getPassword())
+                .roles(doctor.getRole())
+                .build();
     }
 }

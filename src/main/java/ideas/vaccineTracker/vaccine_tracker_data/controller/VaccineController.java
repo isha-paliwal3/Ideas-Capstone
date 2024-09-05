@@ -52,7 +52,7 @@ public class VaccineController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/vaccines")
+    @GetMapping("admin/vaccines")
     public ResponseEntity<List<VaccineProjection>> getAllVaccines() {
         List<VaccineProjection> vaccines = vaccineRepository.findBy();
         return new ResponseEntity<>(vaccines, HttpStatus.OK);
