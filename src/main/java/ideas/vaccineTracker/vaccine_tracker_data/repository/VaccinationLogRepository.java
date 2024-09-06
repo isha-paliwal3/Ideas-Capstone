@@ -1,7 +1,6 @@
 package ideas.vaccineTracker.vaccine_tracker_data.repository;
 
 import ideas.vaccineTracker.vaccine_tracker_data.dto.VaccinationLogProjection;
-import ideas.vaccineTracker.vaccine_tracker_data.entity.Patient;
 import ideas.vaccineTracker.vaccine_tracker_data.entity.VaccinationLog;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.NonNull;
@@ -11,7 +10,7 @@ import java.util.List;
 public interface VaccinationLogRepository extends CrudRepository<VaccinationLog, Integer> {
 
     @NonNull
-    List<VaccinationLog> findAll();
+    List<VaccinationLogProjection> findBy();
 
     List<VaccinationLogProjection> findByPatientPatientId(Integer patientId);
 
@@ -24,6 +23,8 @@ public interface VaccinationLogRepository extends CrudRepository<VaccinationLog,
     List<VaccinationLogProjection> findByNextDueDateBeforeAndVaccinationStatus(String currentDate, String vaccinationStatus);
 
     Integer countByVaccinationStatus(String vaccinationStatus);
+
+    List<VaccinationLogProjection> findAllByPatientPatientId(Integer patientId);
 
 }
 

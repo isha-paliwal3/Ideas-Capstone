@@ -1,6 +1,7 @@
 package ideas.vaccineTracker.vaccine_tracker_data.config;
 
 import ideas.vaccineTracker.vaccine_tracker_data.filter.JwtRequestFilter;
+import ideas.vaccineTracker.vaccine_tracker_data.roles.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", "/doctors/register", "/authAdmin/register", "/h2-console/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().hasAnyRole("DOCTOR", "ADMIN1")
+                        .anyRequest().hasAnyRole(Roles.ROLE_DOCTOR, Roles.ROLE_ADMIN)
                 )
                 .headers(headers -> headers
                         .frameOptions().sameOrigin()
