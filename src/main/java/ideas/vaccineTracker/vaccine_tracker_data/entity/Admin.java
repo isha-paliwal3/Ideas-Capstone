@@ -1,5 +1,6 @@
 package ideas.vaccineTracker.vaccine_tracker_data.entity;
 
+import ideas.vaccineTracker.vaccine_tracker_data.roles.Roles;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,14 +24,10 @@ public class Admin {
     private String password;
 
     @Column(nullable = false)
-    private String adminName;
-
-    @Column(nullable = false)
-    private String role = "ROLE_ADMIN";
-
-    public Admin(String email, String password, String adminName) {
+    private String role = Roles.ROLE_ADMIN;
+    public Admin(String email, String password) {
         this.email = email;
         this.password = password;
-        this.adminName = adminName;
+        this.role = Roles.ROLE_ADMIN;
     }
 }

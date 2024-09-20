@@ -14,17 +14,6 @@ public interface VaccinationLogRepository extends CrudRepository<VaccinationLog,
 
     List<VaccinationLogProjection> findByPatientPatientId(Integer patientId);
 
-    List<VaccinationLogProjection> findByVaccinationStatus(String vaccinationStatus);
-
-    List<VaccinationLogProjection> findByPatientPatientIdAndVaccinationStatusOrderByNextDueDateAsc(Integer patientId, String vaccinationStatus);
-
-    Integer countByPatientPatientIdAndVaccineVaccineIdAndVaccinationStatus(Integer patientId, Integer vaccineId, String vaccinationStatus);
-
-    List<VaccinationLogProjection> findByNextDueDateBeforeAndVaccinationStatus(String currentDate, String vaccinationStatus);
-
-    Integer countByVaccinationStatus(String vaccinationStatus);
-
-    List<VaccinationLogProjection> findAllByPatientPatientId(Integer patientId);
-
+    VaccinationLogProjection findByLogId(Integer logId);
 }
 

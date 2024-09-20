@@ -1,8 +1,9 @@
 package ideas.vaccineTracker.vaccine_tracker_data.controller;
 
 import ideas.vaccineTracker.vaccine_tracker_data.dto.ImmunizationScheduleProjection;
-import ideas.vaccineTracker.vaccine_tracker_data.exception.ResourceNotFoundException;
-import ideas.vaccineTracker.vaccine_tracker_data.repository.ImmunizationScheduleRepository;
+import ideas.vaccineTracker.vaccine_tracker_data.dto.PatientVaccinationDueProjection;
+import ideas.vaccineTracker.vaccine_tracker_data.entity.ImmunizationSchedule;
+import ideas.vaccineTracker.vaccine_tracker_data.service.ImmunizationScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,70 +12,51 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/doctor/immunization-schedules")
+@CrossOrigin("*")
 public class ImmunizationScheduleController {
 
     @Autowired
-    private ImmunizationScheduleRepository immunizationScheduleRepository;
+    private ImmunizationScheduleService immunizationScheduleService;
 
-    // Get all immunization schedules
-    @GetMapping
+    @GetMapping("/immunization-schedules")
     public ResponseEntity<List<ImmunizationScheduleProjection>> getAllImmunizationSchedules() {
-        List<ImmunizationScheduleProjection> schedules = immunizationScheduleRepository.findBy().stream()
-                .map(schedule -> (ImmunizationScheduleProjection) schedule)
-                .toList();
-
-        if (schedules.isEmpty()) {
-            throw new ResourceNotFoundException("No immunization schedules found");
-        }
-
+        List<ImmunizationScheduleProjection> schedules = immunizationScheduleService.getAllImmunizationSchedules();
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
-    // Get immunization schedules by vaccine ID
-    @GetMapping("/vaccine/{vaccineId}")
+    @GetMapping("/immunization-schedules/vaccine/{vaccineId}")
     public ResponseEntity<List<ImmunizationScheduleProjection>> getSchedulesByVaccineId(@PathVariable Integer vaccineId) {
-        List<ImmunizationScheduleProjection> schedules = immunizationScheduleRepository.findByVaccineVaccineId(vaccineId);
-
-        if (schedules.isEmpty()) {
-            throw new ResourceNotFoundException("No immunization schedules found for vaccine ID: " + vaccineId);
-        }
-
+        List<ImmunizationScheduleProjection> schedules = immunizationScheduleService.getSchedulesByVaccineId(vaccineId);
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
-    // Get immunization schedules by exact age in days
-    @GetMapping("/age/{ageInDays}")
-    public ResponseEntity<List<ImmunizationScheduleProjection>> getSchedulesByAgeInDays(@PathVariable Integer ageInDays) {
-        List<ImmunizationScheduleProjection> schedules = immunizationScheduleRepository.findByAgeInDays(ageInDays);
-
-        if (schedules.isEmpty())
-            throw new ResourceNotFoundException("No immunization schedules found for age in days: " + ageInDays);
-
-        return new ResponseEntity<>(schedules, HttpStatus.OK);
+    @PostMapping("/adminAuth/immunization-schedules")
+    public ResponseEntity<ImmunizationSchedule> createImmunizationSchedule(@RequestBody ImmunizationSchedule schedule) {
+        ImmunizationSchedule createdSchedule = immunizationScheduleService.createImmunizationSchedule(schedule);
+        return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
     }
 
-    // Get immunization schedules for patients older than or equal to a certain age
-    @GetMapping("/age/older-than/{ageInDays}")
-    public ResponseEntity<List<ImmunizationScheduleProjection>> getSchedulesOlderThanAge(@PathVariable Integer ageInDays) {
-        List<ImmunizationScheduleProjection> schedules = immunizationScheduleRepository.findByAgeInDaysGreaterThanEqualOrderByAgeInDays(ageInDays);
-
-        if (schedules.isEmpty()) {
-            throw new ResourceNotFoundException("No immunization schedules found for patients older than or equal to: " + ageInDays + " days");
-        }
-
-        return new ResponseEntity<>(schedules, HttpStatus.OK);
+    @PutMapping("/adminAuth/immunization-schedules/{id}")
+    public ResponseEntity<ImmunizationSchedule> updateImmunizationSchedule(@PathVariable Integer id, @RequestBody ImmunizationSchedule scheduleDetails) {
+        ImmunizationSchedule updatedSchedule = immunizationScheduleService.updateImmunizationSchedule(id, scheduleDetails);
+        return new ResponseEntity<>(updatedSchedule, HttpStatus.OK);
     }
 
-    // Get immunization schedules for patients younger than or equal to a certain age
-    @GetMapping("/age/younger-than/{ageInDays}")
-    public ResponseEntity<List<ImmunizationScheduleProjection>> getSchedulesYoungerThanAge(@PathVariable Integer ageInDays) {
-        List<ImmunizationScheduleProjection> schedules = immunizationScheduleRepository.findByAgeInDaysLessThanEqualOrderByAgeInDays(ageInDays);
+    @DeleteMapping("/adminAuth/immunization-schedules/{id}")
+    public ResponseEntity<Void> deleteImmunizationSchedule(@PathVariable Integer id) {
+        immunizationScheduleService.deleteImmunizationSchedule(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
-        if (schedules.isEmpty()) {
-            throw new ResourceNotFoundException("No immunization schedules found for patients younger than or equal to: " + ageInDays + " days");
-        }
+    @GetMapping("/immunization-schedules/upcoming")
+    public ResponseEntity<List<PatientVaccinationDueProjection>> getVaccinationsDueWithin10Days() {
+        List<PatientVaccinationDueProjection> dueVaccinations = immunizationScheduleService.getVaccinationsDueWithin10Days();
+        return new ResponseEntity<>(dueVaccinations, HttpStatus.OK);
+    }
 
-        return new ResponseEntity<>(schedules, HttpStatus.OK);
+    @GetMapping("/immunization-schedules/count-upcoming")
+    public ResponseEntity<Long> countUpcomingVaccinations() {
+        long count = immunizationScheduleService.countVaccinationsDueWithin10Days();
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 }
