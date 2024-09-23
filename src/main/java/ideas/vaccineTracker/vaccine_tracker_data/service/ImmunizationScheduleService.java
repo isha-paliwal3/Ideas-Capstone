@@ -48,11 +48,11 @@ public class ImmunizationScheduleService {
         immunizationScheduleRepository.delete(schedule);
     }
 
-    public List<PatientVaccinationDueProjection> getVaccinationsDueWithin10Days() {
+    public List<PatientVaccinationDueProjection> getVaccinationsDueWithin7Days() {
         return immunizationScheduleRepository.findVaccinationsDueWithin7Days();
     }
 
-    public long countVaccinationsDueWithin10Days() {
+    public long countVaccinationsDueWithin7Days() {
         return immunizationScheduleRepository.countVaccinationsDueWithin10Days();
     }
 }

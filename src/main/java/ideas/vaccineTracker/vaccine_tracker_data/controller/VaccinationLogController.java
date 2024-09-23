@@ -36,6 +36,7 @@ public class VaccinationLogController {
         VaccinationLog createdLog = vaccinationLogService.createVaccinationLog(log);
         return new ResponseEntity<>(createdLog, HttpStatus.CREATED);
     }
+
     @PutMapping("/{id}")
     public ResponseEntity<VaccinationLogProjection> updateVaccinationLog(
             @PathVariable Integer id,

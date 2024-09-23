@@ -18,6 +18,12 @@ public class ImmunizationScheduleController {
     @Autowired
     private ImmunizationScheduleService immunizationScheduleService;
 
+    @PostMapping("/adminAuth/immunization-schedules")
+    public ResponseEntity<ImmunizationSchedule> createImmunizationSchedule(@RequestBody ImmunizationSchedule schedule) {
+        ImmunizationSchedule createdSchedule = immunizationScheduleService.createImmunizationSchedule(schedule);
+        return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
+    }
+
     @GetMapping("/immunization-schedules")
     public ResponseEntity<List<ImmunizationScheduleProjection>> getAllImmunizationSchedules() {
         List<ImmunizationScheduleProjection> schedules = immunizationScheduleService.getAllImmunizationSchedules();
@@ -30,10 +36,16 @@ public class ImmunizationScheduleController {
         return new ResponseEntity<>(schedules, HttpStatus.OK);
     }
 
-    @PostMapping("/adminAuth/immunization-schedules")
-    public ResponseEntity<ImmunizationSchedule> createImmunizationSchedule(@RequestBody ImmunizationSchedule schedule) {
-        ImmunizationSchedule createdSchedule = immunizationScheduleService.createImmunizationSchedule(schedule);
-        return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
+    @GetMapping("/immunization-schedules/upcoming")
+    public ResponseEntity<List<PatientVaccinationDueProjection>> getVaccinationsDueWithin7Days() {
+        List<PatientVaccinationDueProjection> dueVaccinations = immunizationScheduleService.getVaccinationsDueWithin7Days();
+        return new ResponseEntity<>(dueVaccinations, HttpStatus.OK);
+    }
+
+    @GetMapping("/immunization-schedules/count-upcoming")
+    public ResponseEntity<Long> countUpcomingVaccinations() {
+        long count = immunizationScheduleService.countVaccinationsDueWithin7Days();
+        return new ResponseEntity<>(count, HttpStatus.OK);
     }
 
     @PutMapping("/adminAuth/immunization-schedules/{id}")
@@ -48,15 +60,4 @@ public class ImmunizationScheduleController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/immunization-schedules/upcoming")
-    public ResponseEntity<List<PatientVaccinationDueProjection>> getVaccinationsDueWithin10Days() {
-        List<PatientVaccinationDueProjection> dueVaccinations = immunizationScheduleService.getVaccinationsDueWithin10Days();
-        return new ResponseEntity<>(dueVaccinations, HttpStatus.OK);
-    }
-
-    @GetMapping("/immunization-schedules/count-upcoming")
-    public ResponseEntity<Long> countUpcomingVaccinations() {
-        long count = immunizationScheduleService.countVaccinationsDueWithin10Days();
-        return new ResponseEntity<>(count, HttpStatus.OK);
-    }
 }
